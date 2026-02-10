@@ -1,5 +1,6 @@
 require("dotenv").config();
 const { Client, GatewayIntentBits, AttachmentBuilder } = require("discord.js");
+
 const { createCanvas, loadImage } = require("canvas");
 
 const client = new Client({
