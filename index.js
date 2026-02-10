@@ -28,7 +28,7 @@ client.on("guildMemberAdd", async (member) => {
 
   // 🔹 LINE 1 (normal text, system feel)
   await channel.send(
-    `Hey ${member}, welcome to **TEAM KORN!**`
+    `Hey ${member}, welcome to **𝐊𝐞𝐧𝐠𝐬 /~**`
   );
 
   // 🔹 SYSTEM-STYLE WELCOME CARD
