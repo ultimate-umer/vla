@@ -1,13 +1,13 @@
 {
-  "name": "system-welcome-bot",
+  "name": "welcome-card-bot",
   "version": "1.0.0",
-  "description": "Discord System Style Welcome Bot",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
   },
   "dependencies": {
     "discord.js": "^14.14.1",
+    "canvas": "^2.11.2",
     "dotenv": "^16.3.1"
   }
 }
