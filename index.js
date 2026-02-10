@@ -60,11 +60,18 @@ client.on("guildMemberAdd", async (member) => {
     ctx.fillStyle = "#ffffff";
     ctx.textAlign = "center";
 
+    ctx.shadowColor = "#ffffff";
+    ctx.shadowBlur = 15;
+
     ctx.font = "36px Poppins";
     ctx.fillText("WELCOME TO KENGS /~", canvas.width / 2, 250);
+   
+    ctx.shadowBlur = 8;
 
     ctx.font = "22px Poppins";
     ctx.fillText("THANK YOU FOR JOINING", canvas.width / 2, 285);
+
+    ctx.shadowBlur = 0;
 
     // SEND IMAGE
     const attachment = new AttachmentBuilder(canvas.toBuffer(), {
