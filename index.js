@@ -1,78 +1,81 @@
-require("dotenv").config();
 const { Client, GatewayIntentBits, AttachmentBuilder } = require("discord.js");
+const { createCanvas, loadImage, registerFont } = require("canvas");
+require("dotenv").config();
 
-const { createCanvas, loadImage } = require("canvas");
+// REGISTER FONT (important)
+registerFont("./assets/fonts/Poppins-Bold.ttf", {
+  family: "Poppins",
+});
 
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
-    GatewayIntentBits.GuildMembers
-  ]
+    GatewayIntentBits.GuildMembers,
+  ],
 });
 
 client.once("ready", () => {
-  console.log(`🤖 Logged in as ${client.user.tag}`);
+  console.log(`✅ Logged in as ${client.user.tag}`);
 });
 
 client.on("guildMemberAdd", async (member) => {
-  const channel = member.guild.channels.cache.get(
-    process.env.WELCOME_CHANNEL_ID
-  );
-  if (!channel) return;
+  try {
+    // 🔹 CHANNEL (general)
+    const channel = member.guild.channels.cache.find(
+      (ch) => ch.name === "general"
+    );
+    if (!channel) return;
 
-  // 🎨 Canvas
-  const canvas = createCanvas(800, 350);
-  const ctx = canvas.getContext("2d");
+    // 🔹 TEXT MESSAGE (IMAGE SE PEHLE)
+    await channel.send(
+      `Hey ${member}, welcome to 𝐊𝐞𝐧𝐠𝐬 /~`
+    );
 
-  // 🖤 Background
-  ctx.fillStyle = "#0b0b0b";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // 🔹 CANVAS
+    const canvas = createCanvas(800, 350);
+    const ctx = canvas.getContext("2d");
 
-  // 🖼 Avatar
-  const avatarURL = member.user.displayAvatarURL({
-    extension: "png",
-    size: 256
-  });
-  const avatar = await loadImage(avatarURL);
+    // Background
+    const bg = await loadImage("./assets/background.png");
+    ctx.drawImage(bg, 0, 0, canvas.width, canvas.height);
 
-  // ⭕ Circle avatar
-  const x = canvas.width / 2;
-  const y = 120;
-  const radius = 70;
+    // Discord Logo Circle
+    const logo = await loadImage(
+      "https://cdn.discordapp.com/embed/avatars/0.png"
+    );
 
-  ctx.save();
-  ctx.beginPath();
-  ctx.arc(x, y, radius, 0, Math.PI * 2, true);
-  ctx.closePath();
-  ctx.clip();
-  ctx.drawImage(avatar, x - radius, y - radius, radius * 2, radius * 2);
-  ctx.restore();
+    const x = canvas.width / 2;
+    const y = 140;
+    const radius = 60;
 
-  // 📝 Username text
-  ctx.fillStyle = "#ffffff";
-  ctx.font = "28px Sans";
-  ctx.textAlign = "center";
-  ctx.fillText(
-    `${member.user.username}. just joined the server`,
-    canvas.width / 2,
-    240
-  );
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, Math.PI * 2, true);
+    ctx.closePath();
+    ctx.clip();
+    ctx.drawImage(logo, x - radius, y - radius, radius * 2, radius * 2);
+    ctx.restore();
 
-  // 🧾 Member count
-  ctx.fillStyle = "#b3b3b3";
-  ctx.font = "20px Sans";
-  ctx.fillText(
-    `Member #${member.guild.memberCount}`,
-    canvas.width / 2,
-    275
-  );
+    // TEXT
+    ctx.fillStyle = "#ffffff";
+    ctx.textAlign = "center";
 
-  const attachment = new AttachmentBuilder(
-    canvas.toBuffer(),
-    { name: "welcome.png" }
-  );
+    ctx.font = "36px Poppins";
+    ctx.fillText("WELCOME TO KENGS /~", canvas.width / 2, 250);
 
-  channel.send({ files: [attachment] });
+    ctx.font = "22px Poppins";
+    ctx.fillText("THANK YOU FOR JOINING", canvas.width / 2, 285);
+
+    // SEND IMAGE
+    const attachment = new AttachmentBuilder(canvas.toBuffer(), {
+      name: "welcome.png",
+    });
+
+    await channel.send({ files: [attachment] });
+
+  } catch (err) {
+    console.error("❌ Welcome error:", err);
+  }
 });
 
 client.login(process.env.TOKEN);
